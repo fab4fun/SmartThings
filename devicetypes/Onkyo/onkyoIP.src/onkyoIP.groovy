@@ -41,6 +41,7 @@ metadata {
 	command "pc"
 	command "net"
 	command "aux"
+	command "bddvd"
 	command "z2on"
 	command "z2off"
 	command "makeNetworkId", ["string","string"]
@@ -74,13 +75,17 @@ tiles {
         standardTile("aux", "device.switch", decoration: "flat"){
         	state "aux", label: 'aux', action: "aux", icon:"st.Electronics.electronics6"
         	}
-	controlTile("levelSliderControl", "device.level", "slider", height: 1, width: 2, inactiveLabel: false, range:"(0..70)") {
-		state "level", label:'${currentValue}', action:"setLevel", backgroundColor:"#ffffff"
-		}
+        standardTile("bddvd", "device.switch", decoration: "flat"){
+		state "bddvd", label: 'bddvd', action: "bddvd", icon:"st.Electronics.electronics2"
+        	}
         standardTile("zone2", "device.switch", inactiveLabel: false, decoration: "flat") {
 		state "off", label:"Enable Zone 2", action:"z2on", icon:"st.custom.sonos.unmuted", backgroundColor:"#ffffff", nextState:"on"
 		state "on", label:"Disable Zone 2", action:"z2off", icon:"st.custom.sonos.muted", backgroundColor:"#ffffff", nextState:"off"
         	}
+	controlTile("levelSliderControl", "device.level", "slider", height: 1, width: 2, inactiveLabel: false, range:"(0..70)") {
+		state "level", label:'${currentValue}', action:"setLevel", backgroundColor:"#ffffff"
+		}
+
         /*   Commenting this out as it doesn't work yet     
         valueTile("currentSong", "device.trackDescription", inactiveLabel: true, height:1, width:3, decoration: "flat") {
 		state "default", label:'${currentValue}', backgroundColor:"#ffffff"
@@ -90,7 +95,7 @@ tiles {
 
 	
     main "switch"
-    details(["switch","mute","cable","stb","pc","net","aux","levelSliderControl","zone2"])
+    details(["switch","mute","cable","stb","pc","net","aux","bddvd","zone2","levelSliderControl"])
     //Add currentSong to above once I can figure out how to get the QSTN commands parsed into artist/song titles
 }
 
@@ -202,6 +207,14 @@ def aux() {
 	def ha = new physicalgraph.device.HubAction(msg,physicalgraph.device.Protocol.LAN)
 	return ha
 	}
+	
+def bddvd() {
+	log.debug "Setting input to BD/DVD"
+	def msg = getEiscpMessage("SLI10")
+	def ha = new physicalgraph.device.HubAction(msg,physicalgraph.device.Protocol.LAN)
+	return ha
+	}	
+	
 def z2on() {
 	log.debug "Turning on Zone 2"
 	def msg = getEiscpMessage("ZPW01")
