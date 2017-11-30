@@ -209,7 +209,7 @@ def aux() {
 	}
 	
 def bddvd() {
-	log.debug "Setting input to BD/DVD"
+	log.debug "Setting input to BDDVD"
 	def msg = getEiscpMessage("SLI10")
 	def ha = new physicalgraph.device.HubAction(msg,physicalgraph.device.Protocol.LAN)
 	return ha
